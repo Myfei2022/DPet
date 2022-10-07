@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="render/index.js"></script>
+    <style type="text/css">
+        * {
+            padding: 0px;
+            margin: 0px;
+            user-select: none;
+        }
+
+        #body {
+            width: 100%;
+            height: 100%;
+        }
+
+        .mirrorRotateVertical {
+            transform: rotateY(180deg); /* 垂直镜像翻转 */
+        }
+
+        /*播放器*/
+        #musicPlayer {
+            width: 300px;
+            height: 47px;
+            position: absolute;
+            background-color: rgba(41, 44, 51, 0.9);
+            right: 200px;
+            top: 200px;
+        }
+
+        .upper {
+            width: 100%;
+            height: calc(100% - 2px);
+        }
+
+        #musicPic {
+            width: 45px;
+            height: 45px;
+            float: left;
+        }
+
+        #info {
+            width: calc(100% - 110px);
+            height: 100%;
+            float: left;
+        }
+
+        #playInfo {
+            width: 140px;
+            margin-left: 5px;
+            height: 100%;
+            transition: 0.2s;
+            position: absolute;
+            left: 45px;
+        }
+
+        #name {
+            width: 100%;
+            height: 30px;
+            font-size: 18px;
+            line-height: 30px;
+            text-align: center;
+            color: whitesmoke;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nameSpan {
+            height: 100%;
+            line-height: calc(100%);
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .currentTime {
+            width: 100%;
+            height: 15px;
+            line-height: 10px;
+            font-size: 10px;
+            text-align: center;
+            color: whitesmoke;
+        }
+
+        #playControl {
+            width: 140px;
+            margin-left: 5px;
+            height: 100%;
+            transition: 0.2s;
+            opacity: 0;
+            position: absolute;
+            left: 45px;
+            z-index: -9999;
+        }
+
+        .playControlBtn {
+            width: 25px;
+            height: 25px;
+            float: left;
+            margin-top: 10px;
+            margin-left: 15px;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        #backBtn {
+            background-image: url("img/musicControl/previousMusic.png");
+        }
+
+        #backBtn:hover {
+            background-image: url("img/musicControl/previousMusicC.png");
+        }
+
+        #playBtn {
+            background-image: url("img/musicControl/pause.png");
+        }
+
+        #playBtn:hover {
+            background-image: url("img/musicControl/pauseC.png");
+        }
+
+        #nextBtn {
+            background-image: url("img/musicControl/nextMusic.png");
+        }
+
+        #nextBtn:hover {
+            background-image: url("img/musicControl/nextMusicC.png");
+        }
+
+        .control {
+            width: 90px;
+            height: 25px;
+            margin-top: 12px;
+            float: left;
+        }
+
+        .controlBtn {
+            width: 20px;
+            height: 20px;
+            float: left;
+            margin-left: 7px;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        #playModeBtn {
+            width: 25px;
+            background-image: url("img/musicControl/cycle.png");
+        }
+
+        #playModeBtn:hover {
+            background-image: url("img/musicControl/cycleC.png");
+        }
+
+        .volumeNo {
+            background-image: url("img/musicControl/volumeNo.png");
+        }
+
+        .volumeNo:hover {
+            background-image: url("img/musicControl/volumeNoC.png");
+        }
+
+        .volumeLittle{
+            background-image: url("img/musicControl/volumeLittle.png");
+        }
+
+        .volumeLittle:hover{
+            background-image: url("img/musicControl/volumeLittleC.png");
+        }
+
+        .volumeSome{
+            background-image: url("img/musicControl/volumeSome.png");
+        }
+
+        .volumeSome:hover{
+            background-image: url("img/musicControl/volumeSomeC.png");
+        }
+
+        .volumeALot{
+            background-image: url("img/musicControl/volumeALot.png");
+        }
+
+        .volumeALot:hover{
+            background-image: url("img/musicControl/volumeALotC.png");
+        }
+
+        #playListBtn {
+            background-image: url("img/musicControl/playListB.png");
+        }
+
+        #playListBtn:hover {
+            background-image: url("img/musicControl/playList.png");
+        }
+
+        .winControl {
+            width: 20px;
+            height: 100%;
+            float: left;
+        }
+
+        .winControlBtn {
+            width: 8px;
+            height: 8px;
+            float: left;
+            margin-top: 6px;
+            margin-left: 6px;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        #close {
+            background-image: url("img/musicControl/close.png");
+        }
+
+        #close:hover {
+            background-image: url("img/musicControl/closeC.png");
+        }
+
+        #file {
+            background-image: url("img/musicControl/file.png");
+        }
+
+        #file:hover {
+            background-image: url("img/musicControl/fileC.png");
+        }
+
+        .noDisplay {
+            display: none;
+        }
+
+        #playList {
+            width: 300px;
+            height: 0px;
+            overflow: hidden;
+            position: absolute;
+            top: 47px;
+            left: 0px;
+            transition: 0.3s;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        #playListContent {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .playListItem {
+            width: 100%;
+            height: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: darkgrey;
+        }
+
+        .endItem {
+            width: 100%;
+            height: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 12px;
+            font-weight: 300;
+            color: darkgrey;
+            text-align: center;
+        }
+        .playListItemStyle {
+            width: 260px;
+            height: 30px;
+            line-height: 30px;
+            overflow-x: hidden;
+            text-align: left;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 12px;
+            font-weight: 300;
+            margin-left: 10px;
+            float: left;
+        }
+
+        .playListItemOp{
+            width: 14px;
+            height: 14px;
+            margin-top: 8px;
+            float: right;
+            margin-right: 5px;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .playListItemDelete{
+            background-image: url("img/musicControl/trash.png");
+        }
+
+        .playListItemDelete:hover{
+            background-image: url("img/musicControl/trashC.png");
+        }
+
+        .playListItemAdd{
+            background-image: url("img/musicControl/add.png");
+        }
+
+        .playListItemAdd:hover{
+            background-image: url("img/musicControl/addC.png");
+        }
+        .grayItem {
+            background-color: rgba(40, 40, 41, 0.9);
+        }
+
+        .whiteItem {
+            background-color: rgba(41, 43, 47, 0.9);
+        }
+
+        .playListItem:hover {
+            color: pink;
+        }
+
+        #progressBar {
+            height: 2px;
+            width: 100%;
+            background: #555;
+            position: absolute;
+            top: 45px;
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        #progressDot {
+            border-radius: 50%;
+            width: 8px;
+            height: 8px;
+            position: absolute;
+            background-color: whitesmoke;
+            top: -3px;
+            left: -3px;
+            cursor: w-resize;
+            z-index: 9999;
+        }
+
+        #progress {
+            height: 100%;
+            width: 0%;
+            background: red;
+        }
+
+        #tmpTitleBar {
+            width: 98%;
+            height: 0px;
+            margin-left: 1%;
+            line-height: 20px;
+            text-align: center;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 12px;
+            font-weight: 300;
+            background-color: rgba(41, 44, 51, 0.9);
+            position: absolute;
+            top: 47px;
+            color: whitesmoke;
+            transition: 0.2s;
+            overflow: hidden;
+        }
+
+        #volumeBar{
+            height: 20px;
+            width: 120px;
+            left: 175px;
+            border-radius: 10px;
+            background-color: rgba(41, 44, 51, 0.9);
+            position: absolute;
+            top: -20px;
+            cursor: pointer;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        #volumeDot {
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            background-color: whitesmoke;
+            top: 0px;
+            left: 0px;
+            cursor: w-resize;
+            z-index: 9999;
+        }
+
+        #volume {
+            height: 100%;
+            width: 0%;
+            background: darkgrey;
+        }
+    </style>
+</head>
+<body id="body" class="">
+<div id="img" class=""></div>
+<div id="musicPlayer" class="noDisplay">
+    <audio src="" id="audio"></audio>
+    <div class="upper">
+        <div id="info">
+            <img src="paimon.PNG" alt="" ondragstart="return false;" id="musicPic">
+            <div id="playInfo">
+                <div id="name"><span id="nameSpan" class="nameSpan"></span><span id="nameSpanCopy"
+                                                                                 class="nameSpan"></span></div>
+                <div class="currentTime">
+                    <p><span id="currentTime">0:00</span><span>/</span><span id="duration">0:00</span></p>
+                </div>
+            </div>
+            <div id="playControl">
+                <div id="backBtn" class="playControlBtn" onclick="backMusic()"></div>
+                <div id="playBtn" class="playControlBtn" onclick="playPause()"></div>
+                <div id="nextBtn" class="playControlBtn" onclick="nextMusic()"></div>
+            </div>
+        </div>
+        <div class="control">
+            <div id="playModeBtn" class="controlBtn" onclick="switchMode()"></div>
+            <div id="volumeBtn" class="controlBtn volumeSome" onclick="showHideVolumeBar()" ondblclick="mute()"></div>
+            <div id="playListBtn" class="controlBtn" onclick="showHidePlayList()"></div>
+        </div>
+        <div class="winControl">
+            <div id="close" class="winControlBtn"></div>
+            <div id="file" class="winControlBtn" title="管理音乐文件" onclick="showFileFolder()"></div>
+            <div style="width:0px;height: 0px;overflow: hidden">
+                <input type="file" id="fileChooser"
+                       name="选择mp3(mpeg)文件" multiple="multiple"
+                       accept="audio/mpeg">
+            </div>
+        </div>
+        <div class=""></div>
+    </div>
+    <div id="progressBar">
+        <div id="progressDot"></div>
+        <div id="progress"></div>
+    </div>
+    <div id="volumeBar" class="noDisplay">
+        <div id="volumeDot"></div>
+        <div id="volume"></div>
+    </div>
+    <div id="tmpTitleBar" class="noDisplay"></div>
+    <div id="playList">
+        <ul id="playListContent" class="playListStyle"></ul>
+    </div>
+</div>
+</body>
+</html>
